@@ -1,2 +1,4 @@
 # super-tic-tac-toe
 A command line version of super tic-tac-toe! If you don't know how to play check out the readme!
+# How the game works
+Tic tac toe is played with a nested tic-tac-toe board. Players take their moves inside the internal boards. The first player takes a move within any internal board. The second player then must take their move in the internal board that corresponds to where the previous move was played. For example if the first player takes the middle square of the top left board the second player must make their move within the middle internal board. Then the first player must also take their next move in the board that corresponds to the previous move and so on. When a player wins an internal board they make their mark on the external board. Play continues like this until one player makes a tic-tac-toe on the external board.
