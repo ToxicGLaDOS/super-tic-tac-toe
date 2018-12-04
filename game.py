@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
+
 class InvalidMoveException(Exception):
     def __init__(self, message):
         super().__init__(message)
-        
 
 
 class Tile(object):
@@ -14,9 +14,10 @@ class Tile(object):
         if self.value != " ":
             raise InvalidMoveException("Invalid move")
         self.value = move
-    
+
     def display(self, row):
         return self.value
+
 
 class SubBoard(object):
     def __init__(self):
@@ -24,12 +25,11 @@ class SubBoard(object):
         self.winner = None
         for x in range(9):
             self.board.append(Tile())
-            
+
     def make_move(self, coords, move):
         self.board[coords[0]].make_move(coords[1:], move)
         if self.winner == None:
             self.winner = self.check_win()
-
 
     def check_win(self):
         # Rows
@@ -52,7 +52,6 @@ class SubBoard(object):
         elif all(self.board[2].value != " " and self.board[2].value == rest.value for rest in self.board[2:9:2][:-1]):
             return self.board[2].value
         return None
-
 
 
 class Board(object):
@@ -91,55 +90,61 @@ class Board(object):
 
     def subBoardWins(self):
         s = ""
-        for index,board in enumerate(self.board):
+        for index, board in enumerate(self.board):
             s += str(index) + " " + str(board.winner) + "\n"
         return s
 
     def display(self):
         s = ""
-        for k in range(0,9,3):
+        for k in range(0, 9, 3):
             for i in range(k, k + 3):
                 for j in range(3):
                     s += self.board[i].board[j].value
-                    if j == 2:
-                        s += "  "
+                    if i == k+2 and j == 2:
+                        pass
+                    elif j == 2:
+                        s += " \u2503 " # thick line
                     else:
-                        s += "|"
+                        s += "\u2502"
             print(s)
             s = ""
-            print("\u2014\u2014\u2014\u2014\u2014  \u2014\u2014\u2014\u2014\u2014  \u2014\u2014\u2014\u2014\u2014")
+            print(
+                "\u2500\u253C\u2500\u253C\u2500 \u2503 \u2500\u253C\u2500\u253C\u2500 \u2503 \u2500\u253C\u2500\u253C\u2500")
             for i in range(k, k + 3):
                 for j in range(3, 6):
                     s += self.board[i].board[j].value
-                    if j == 5:
-                        s += "  "
+                    if i == k+2 and j == 5:
+                        pass
+                    elif j == 5:
+                        s += " \u2503 "
                     else:
-                        s += "|"
+                        s += "\u2502"
             print(s)
             s = ""
-            print("\u2014\u2014\u2014\u2014\u2014  \u2014\u2014\u2014\u2014\u2014  \u2014\u2014\u2014\u2014\u2014")
+            print(
+                "\u2500\u253C\u2500\u253C\u2500 \u2503 \u2500\u253C\u2500\u253C\u2500 \u2503 \u2500\u253C\u2500\u253C\u2500")
             for i in range(k, k + 3):
                 for j in range(6, 9):
                     s += self.board[i].board[j].value
-                    if j == 8:
-                        s += "  "
+                    if i == k+2 and j == 8:
+                        pass
+                    elif j == 8:
+                        s += " \u2503 "
                     else:
-                        s += "|"
+                        s += "\u2502"
             print(s)
             s = ""
-            print()
-        
-
-
-
-
-
+            if not k == 6:
+                print((("\u2501"*6)+"\u254b\u2501")*2+("\u2501"*6))
+            else:
+                print()
 
 
 external_board = Board(1)
 move_count = 0
 
-command = input("First move. Enter space seperated coordinates place the first move. 0 0 for top left 8 8 for bottom right.\n")
+command = input(
+    "First move. Enter space seperated coordinates place the first move. 0 0 for top left 8 8 for bottom right.\n")
 coords = command.split()
 for i in range(len(coords)):
     coords[i] = int(coords[i])
@@ -156,8 +161,7 @@ while not winner:
             winner = external_board.make_move(coords, 'x')
         else:
             winner = external_board.make_move(coords, 'o')
-        
-        
+
         move_count += 1
         prev_internal = int(coords[1])
     except InvalidMoveException:
@@ -165,4 +169,3 @@ while not winner:
     print("Subboard winners:")
     print(external_board.subBoardWins())
     external_board.display()
-
