@@ -23,6 +23,8 @@ class SubBoard(object):
     def __init__(self):
         self.board = []
         self.winner = None
+        self.winning_combos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
+
         for x in range(9):
             self.board.append(Tile())
 
@@ -32,31 +34,16 @@ class SubBoard(object):
             self.winner = self.check_win()
 
     def check_win(self):
-        # Rows
-        if all(self.board[0].value != " " and self.board[0].value == rest.value for rest in self.board[0:3]):
-            return self.board[0].value
-        elif all(self.board[3].value != " " and self.board[3].value == rest.value for rest in self.board[3:6]):
-            return self.board[3].value
-        elif all(self.board[6].value != " " and self.board[6].value == rest.value for rest in self.board[6:9]):
-            return self.board[6]
-        # Columns
-        elif all(self.board[0].value != " " and self.board[0].value == rest.value for rest in self.board[0:9:3]):
-            return self.board[0].value
-        elif all(self.board[1].value != " " and self.board[1].value == rest.value for rest in self.board[1:9:3]):
-            return self.board[1].value
-        elif all(self.board[2].value != " " and self.board[2].value == rest.value for rest in self.board[2:9:3]):
-            return self.board[2].value
-        # Diagonals
-        elif all(self.board[0].value != " " and self.board[0].value == rest.value for rest in self.board[0:9:4]):
-            return self.board[0].value
-        elif all(self.board[2].value != " " and self.board[2].value == rest.value for rest in self.board[2:9:2][:-1]):
-            return self.board[2].value
+        for wc in self.winning_combos:
+            if self.board[wc[0]].value != " " and self.board[wc[0]].value == self.board[wc[1]].value == self.board[wc[2]].value:
+                return self.board[wc[0]].value
         return None
 
 
 class Board(object):
     def __init__(self, nesting):
         self.board = []
+        self.winning_combos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
         for x in range(9):
             self.board.append(SubBoard())
         self.winner = None
@@ -67,26 +54,12 @@ class Board(object):
         return winner
 
     def check_win(self):
-        # Rows
-        if all(self.board[0].winner != None and self.board[0].winner == rest.winner for rest in self.board[0:3]):
-            return self.board[0]
-        elif all(self.board[3].winner != None and self.board[3].winner == rest.winner for rest in self.board[3:6]):
-            return self.board[3]
-        elif all(self.board[6].winner != None and self.board[6].winner == rest.winner for rest in self.board[6:9]):
-            return self.board[6]
-        # Columns
-        elif all(self.board[0].winner != None and self.board[0].winner == rest.winner for rest in self.board[0:9:3]):
-            return self.board[0]
-        elif all(self.board[1].winner != None and self.board[1].winner == rest.winner for rest in self.board[1:9:3]):
-            return self.board[1]
-        elif all(self.board[2].winner != None and self.board[2].winner == rest.winner for rest in self.board[2:9:3]):
-            return self.board[2]
-        # Diagonals
-        elif all(self.board[0].winner != None and self.board[0].winner == rest.winner for rest in self.board[0:9:4]):
-            return self.board[0]
-        elif all(self.board[2].winner != None and self.board[2].winner == rest.winner for rest in self.board[2:9:2][:-1]):
-            return self.board[2]
+        for wc in self.winning_combos:
+            if self.board[wc[0]] != None and self.board[wc[0]].winner == self.board[wc[1]].winner == self.board[wc[2]].winner:
+                return self.board[wc[0]].winner
         return None
+
+
 
     def subBoardWins(self):
         s = ""
@@ -140,6 +113,8 @@ class Board(object):
                 print()
 
 
+
+winning_moves = ["0 0", "1", '0', '2', '0', '4', '4', '0', '3', '0', '6', '1', '2', '1', '1', '8', '8', '2', '4', '2', '8']
 external_board = Board(1)
 move_count = 0
 
@@ -161,7 +136,8 @@ while not winner:
             winner = external_board.make_move(coords, 'x')
         else:
             winner = external_board.make_move(coords, 'o')
-
+        if winner:
+            print(f'{winner} wins!')
         move_count += 1
         prev_internal = int(coords[1])
     except InvalidMoveException:
